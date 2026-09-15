@@ -1,0 +1,34 @@
+services:
+  webpage:
+    container_name: webpage
+    image: php:apache
+    environment:
+      - USERNAME=eric
+      - PASSWORD=python
+    ports:
+      - "80:80"
+    networks:
+      - student-list-networks
+    depends_on:
+      - api
+    volumes:
+      - ./website:/var/www/html
+
+  api:
+    container_name: api
+    image: api:v1.0
+    ports:
+      - "5000:5000"
+    volumes:
+      # OPZIONE A: Se vuoi montare il file specifico "student_age.json" che si trova dentro la cartella "simple_api"
+      - ./simple_api/student_age.json:/data/student_age.json
+      
+      # OPZIONE B: Se invece volevi montare l'intera cartella "simple_api" nella cartella "/data" del container, usa:
+      # - ./simple_api:/data
+    networks:
+      - student-list-networks
+
+networks:
+  student-list-networks:
+    driver: bridge
+    name: student-list-networks
